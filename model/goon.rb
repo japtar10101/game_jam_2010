@@ -17,7 +17,7 @@ class Goon
   include EventHandler::HasEventHandler
   PUSH = 5
   
-  attr_accessor :ship, :pushx, :pushy, :vx, :vy
+  attr_accessor :ship, :pushx, :pushy, :vx, :vy, :dead
   attr_reader :ax, :ay
   def initialize( px, py, ship, screen_rect )
     @px, @py = px, py # Current Position
@@ -25,14 +25,13 @@ class Goon
     @ax, @ay = 0, 0 # Current Acceleration
     @pushx, @pushy = 0, 0 # Controlled Acceleration
  
-    @max_speed = 400.0 # Max speed on an axis
-    @accel = 1200.0 # Max Acceleration on an axis
     @slowdown = 800.0 # Deceleration when not accelerating
  
-    @image = Surface.new([5,5])
+    @image = Surface.new(GOON)
     @image.fill(:white)
     @rect = @image.make_rect
     @ship = ship
+    @dead = false
     
     # Create event hooks in the easiest way.
     make_magic_hooks(
@@ -44,11 +43,12 @@ class Goon
   private
   # Update the ship state. Called once per frame.
   def update( event )
-    dt = event.seconds # Time since last update
- 
-    update_accel
-    update_vel( dt )
-    update_pos( dt )
+  	unless @dead
+  		dt = event.seconds # Time since last update
+			update_accel
+			update_vel( dt )
+			update_pos( dt )
+		end
   end
  
  
@@ -74,8 +74,8 @@ class Goon
  
     # Scale to the acceleration rate. This is a bit unrealistic, since
     # it doesn't consider magnitude of x and y combined (diagonal).
-    @pushx *= @accel
-    @pushy *= @accel
+    @pushx *= GOON_ACCEL
+    @pushy *= GOON_ACCEL
  
     #implement reflection
     if(@ship.collide_sprite?(self))
@@ -131,8 +131,8 @@ class Goon
     v += a * dt
  
     # Clamp speed so it doesn't go too fast.
-    v = @max_speed if v > @max_speed
-    v = -@max_speed if v < -@max_speed
+    v = MAX_SPEED if v > MAX_SPEED
+    v = -MAX_SPEED if v < -MAX_SPEED
  
     return v
   end

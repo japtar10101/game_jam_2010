@@ -32,7 +32,7 @@ class Ship
  
  
     # The ship's appearance. A white square for demonstration.
-    @image = Surface.new([20,20])
+    @image = Surface.new(SHIP)
     @image.fill(:white)
     @rect = @image.make_rect
  
@@ -45,7 +45,6 @@ class Ship
  
       # Send ClockTicked events to #update()
       ClockTicked => :update
- 
     )
   end
  

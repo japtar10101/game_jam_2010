@@ -139,11 +139,11 @@ class Game
     	ydiff = (check_rect.centery - goon_rect.centery).abs
     	#reflect
 			if xdiff > ydiff
-				#goon.pushy = -0.3 * goon.ay
-				goon.vy *= -0.3
+				#goon.pushy = -1 * goon.ay
+				goon.vy *= -1
 			else
-				#goon.pushx = -0.3 * goon.ax
-				goon.vx *= -0.3
+				#goon.pushx = -1 * goon.ax
+				goon.vx *= -1
 			end
     end
     
