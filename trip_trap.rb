@@ -200,10 +200,10 @@ class Game
     end
     
     # Draw everything
-    @walls.draw @screen
-    @spikes.draw @screen
     @goons.draw @screen
     @ship.draw @screen
+    @spikes.draw @screen
+    @walls.draw @screen
     
     # Refresh the screen.
     @screen.update()

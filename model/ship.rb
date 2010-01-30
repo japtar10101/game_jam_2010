@@ -70,20 +70,25 @@ class Ship
  
   # Update the acceleration based on what keys are pressed.
   def update_accel
-  	@pushx = 0 unless(@pushx)
-  	@pushy = 0 unless(@pushy)
-    @pushx -= 1 if @keys.include?( :left )
-    @pushx += 1 if @keys.include?( :right )
-    @pushy -= 1 if @keys.include?( :up ) # up is down in screen coordinates
-    @pushy += 1 if @keys.include?( :down )
- 
-    # Scale to the acceleration rate. This is a bit unrealistic, since
-    # it doesn't consider magnitude of x and y combined (diagonal).
-    @pushx *= SHIP_ACCEL
-    @pushy *= SHIP_ACCEL
- 
-    @ax, @ay = @pushx, @pushy
-    @pushx, @pushy = 0, 0
+  	if(@pushx)
+			@pushy = 0 unless(@pushy)
+			@pushx -= 1 if @keys.include?( :left )
+			@pushx += 1 if @keys.include?( :right )
+			@pushx *= SHIP_ACCEL
+			@ax = @pushx
+			@pushx = 0
+		else
+			@ax = @pushx
+		end
+		if(pushy)
+			@pushy -= 1 if @keys.include?( :up ) # up is down in screen coordinates
+			@pushy += 1 if @keys.include?( :down )
+			@pushy *= SHIP_ACCEL
+			@ay = @pushy
+			@pushy = 0
+		else
+			@ax = @pushy
+		end
   end
  
  
@@ -102,6 +107,7 @@ class Ship
   # Returns what the new velocity (@vx) should be.
   #
   def update_vel_axis( v, a, dt )
+  	return 0 unless a
  
     # Apply slowdown if not accelerating.
     if a == 0
