@@ -40,7 +40,7 @@ class Game
     @spikes = Group.new
     @walls = Group.new
     @layout = LayoutGenerator.new
-    load_file('test.yaml')
+    load_file('levels/test.yaml')
   end
  
   # The "main loop". Repeat the #step method

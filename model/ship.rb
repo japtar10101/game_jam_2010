@@ -164,10 +164,10 @@ class Ship
     elsif @px > RESOLUTION[0]
     	@px = 0
     end
-    if @py < 0
+    if @py < SHIP[1]
     	@py = RESOLUTION[1]
     elsif @py > RESOLUTION[1]
-    	@py = 0
+    	@py = SHIP[1]
     end
     @rect.center = [@px, @py]
   end
