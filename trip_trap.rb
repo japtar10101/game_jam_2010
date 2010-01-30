@@ -3,6 +3,7 @@
 require "rubygame"
 require "model/ship"
 require "model/goon"
+require "model/group"
 
 include Rubygame
 include Rubygame::Events
@@ -95,8 +96,9 @@ class Game
   
   # Create the goons someplace in the screen
   def make_goons num
-  	@goons = Array.new(num) do |i|
-  		Goon.new( rand(RESOLUTION[0]), rand(RESOLUTION[1]), @ship )
+  	@goons = Group.new
+  	num.times do |i|
+  		@goons << Goon.new( rand(RESOLUTION[0]), rand(RESOLUTION[1]), @ship )
   	end
   	for goon in @goons 
   		make_magic_hooks_for( goon, { YesTrigger.new() => :handle } )
@@ -128,9 +130,10 @@ class Game
     # Draw the ship in its new position.
     @ship.draw( @screen )
  
-    for goon in @goons
-    	goon.draw( @screen )
-    end
+    @goons.draw @screen
+    #for goon in @goons
+    #	goon.draw( @screen )
+    #end
 
     # Refresh the screen.
     @screen.update()
