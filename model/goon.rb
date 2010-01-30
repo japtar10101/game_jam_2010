@@ -15,7 +15,6 @@ include Rubygame::EventTriggers
 class Goon
 	include Sprites::Sprite
   include EventHandler::HasEventHandler
-  PUSH = 5
   
   attr_accessor :ship, :pushx, :pushy, :vx, :vy, :dead
   attr_reader :ax, :ay
@@ -25,9 +24,7 @@ class Goon
     @ax, @ay = 0, 0 # Current Acceleration
     @pushx, @pushy = 0, 0 # Controlled Acceleration
  
-    @slowdown = 800.0 # Deceleration when not accelerating
- 
-    @image = Surface.new(GOON)
+    @image = Surface.new(GOON,0)
     @image.fill(:white)
     @rect = @image.make_rect
     @ship = ship
@@ -43,17 +40,21 @@ class Goon
   private
   # Update the ship state. Called once per frame.
   def update( event )
-  	unless @dead
-  		dt = event.seconds # Time since last update
-			update_accel
-			update_vel( dt )
-			update_pos( dt )
-		end
+		dt = event.seconds # Time since last update
+		update_accel
+		update_vel( dt )
+	  update_pos( dt )
   end
  
  
   # Update the acceleration based on what keys are pressed.
   def update_accel
+  	if @dead
+			@image.fill(:red)
+			@ax, @ay = 0,0
+			return
+		end
+		
     ship_rect = @ship.rect
     goonx = @rect.centerx
     goony = @rect.centery
@@ -82,14 +83,14 @@ class Goon
 			if (goony > ship_rect.top and @vy < 0)
 				@pushy *= -1
 				@ship.pushy -= PUSH
-			elsif (goony < ship_rect.bottom and @vy >= 0)
+			elsif (goony < ship_rect.bottom and @vy > 0)
 				@pushy *= -1
 				@ship.pushy += PUSH
 			end
 			if (goonx > ship_rect.right and @vx < 0)
 				@pushx *= -1
 				@ship.pushx -= PUSH
-			elsif (goonx < ship_rect.left and @vx >= 0)
+			elsif (goonx < ship_rect.left and @vx > 0)
 				@pushx *= -1
 				@ship.pushx += PUSH
 			end
@@ -119,10 +120,10 @@ class Goon
     # Apply slowdown if not accelerating.
     if a == 0
       if v > 0
-        v -= @slowdown * dt
+        v -= SLOWDOWN * dt
         v = 0 if v < 0
       elsif v < 0
-        v += @slowdown * dt
+        v += SLOWDOWN * dt
         v = 0 if v > 0
       end
     end
@@ -131,8 +132,8 @@ class Goon
     v += a * dt
  
     # Clamp speed so it doesn't go too fast.
-    v = MAX_SPEED if v > MAX_SPEED
-    v = -MAX_SPEED if v < -MAX_SPEED
+    v = GOON_MAX_SPEED if v > GOON_MAX_SPEED
+    v = -GOON_MAX_SPEED if v < -GOON_MAX_SPEED
  
     return v
   end

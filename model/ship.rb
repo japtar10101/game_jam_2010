@@ -16,26 +16,21 @@ class Ship
   include Sprites::Sprite
   include EventHandler::HasEventHandler
  
-  attr_accessor :pushx, :pushy
+  attr_accessor :pushx, :pushy, :accel
   attr_reader :ax, :ay, :vx, :vy
   def initialize( px, py, screen_rect )
     @px, @py = px, py # Current Position
     @vx, @vy = 0, 0 # Current Velocity
     @ax, @ay = 0, 0 # Current Acceleration
     @pushx, @pushy = 0, 0 # Controlled Acceleration
-               
-    @max_speed = 400.0 # Max speed on an axis
-    @accel = 1200.0 # Max Acceleration on an axis
-    @slowdown = 800.0 # Deceleration when not accelerating
- 
     @keys = [] # Keys being pressed
- 
  
     # The ship's appearance. A white square for demonstration.
     @image = Surface.new(SHIP)
     @image.fill(:white)
     @rect = @image.make_rect
- 
+    @accel = true
+    
     # Create event hooks in the easiest way.
     make_magic_hooks(
  
@@ -68,9 +63,14 @@ class Ship
   def update( event )
     dt = event.seconds # Time since last update
  
-    update_accel
-    update_vel( dt )
-    update_pos( dt )
+    if @accel
+			update_accel
+			update_vel( dt )
+			update_pos( dt )
+		else
+			#@rect.center = [@px, @py]
+			@accel = true
+		end
   end
  
  
@@ -83,8 +83,8 @@ class Ship
  
     # Scale to the acceleration rate. This is a bit unrealistic, since
     # it doesn't consider magnitude of x and y combined (diagonal).
-    @pushx *= @accel
-    @pushy *= @accel
+    @pushx *= SHIP_ACCEL
+    @pushy *= SHIP_ACCEL
  
     @ax, @ay = @pushx, @pushy
     @pushx, @pushy = 0, 0
@@ -110,10 +110,10 @@ class Ship
     # Apply slowdown if not accelerating.
     if a == 0
       if v > 0
-        v -= @slowdown * dt
+        v -= SLOWDOWN * dt
         v = 0 if v < 0
       elsif v < 0
-        v += @slowdown * dt
+        v += SLOWDOWN * dt
         v = 0 if v > 0
       end
     end
@@ -122,8 +122,8 @@ class Ship
     v += a * dt
  
     # Clamp speed so it doesn't go too fast.
-    v = @max_speed if v > @max_speed
-    v = -@max_speed if v < -@max_speed
+    v = SHIP_MAX_SPEED if v > SHIP_MAX_SPEED
+    v = -SHIP_MAX_SPEED if v < -SHIP_MAX_SPEED
  
     return v
   end

@@ -4,6 +4,7 @@ require "rubygame"
 require "model/ship"
 require "model/goon"
 require "model/group"
+require "model/spike"
 require "global"
 
 include Rubygame
@@ -27,12 +28,13 @@ class Game
   include EventHandler::HasEventHandler
  
   def initialize()
-    make_screen
+    make_screen [FULLSCREEN, DOUBLEBUF]
     make_clock
     make_queue
     make_event_hooks
     make_ship
-    make_goons 16
+    make_goons 0, 0, 16
+    make_spikes 6
   end
  
   # The "main loop". Repeat the #step method
@@ -81,8 +83,8 @@ class Game
   end
  
   # Create the Rubygame window.
-  def make_screen
-    @screen = Screen.open( RESOLUTION )
+  def make_screen flags
+    @screen = Screen.open( RESOLUTION, 0, flags )
     @screen.title = "Trip Trap"
   end
  
@@ -95,14 +97,33 @@ class Game
   end
   
   # Create the goons someplace in the screen
-  def make_goons num
+  def make_goons x, y, num
+  	xtemp = 0
   	@goons = Group.new
   	num.times do |i|
-  		@goons << Goon.new( rand(RESOLUTION[0]), rand(RESOLUTION[1]),
+  		@goons << Goon.new( x + xtemp, y,
   			@ship, RESOLUTION )
+  		xtemp += GOON[0]
+  		if xtemp > SHIP[0]
+  			xtemp = 0
+  			y += GOON[1]
+  		end
   	end
   	for goon in @goons 
   		make_magic_hooks_for( goon, { YesTrigger.new() => :handle } )
+  	end
+  end
+  
+  # Create the spikes someplace in the screen
+  def make_spikes num
+  	max_x = RESOLUTION[0] - SHIP[0]
+  	max_y = RESOLUTION[1] - SHIP[1]
+  	@spikes = Group.new
+  	num.times do |i|
+  		@spikes << Spike.new( rand(max_x), rand(max_y), @ship )
+  	end
+  	for spike in @spikes 
+  		make_magic_hooks_for( spike, { YesTrigger.new() => :handle } )
   	end
   end
  
@@ -128,10 +149,7 @@ class Game
       handle( event )
     end
  
-    # Draw the ship in its new position.
-    @ship.draw( @screen )
- 
-    #HACK: have goons detect each other
+    # have goons bounce off of each other
     @goons.collide_self do |goon, check|
     	check_rect = check.rect
     	goon_rect = goon.rect
@@ -147,8 +165,32 @@ class Game
 			end
     end
     
+    # have goons die on spikes
+    @spikes.collide_group(@goons) do |spike, goon|
+    	goon.dead = true
+    end
+    
+    #ship_rect = @ship.rect
+    #vy = @ship.vy
+    #vx = @ship.vx
+    #@spikes.collide_sprite(@ship) do |spike|
+    #	spike_rect = spike.rect
+    #	ship_rect.top = spike_rect.bottom - 1 if
+    #		(spike_rect.bottom > ship_rect.top and vy < 0)
+		#	ship_rect.bottom = spike_rect.top + 1 if
+		#		(spike_rect.top < ship_rect.bottom and vy > 0)
+		#	ship_rect.right = spike_rect.left - 1 if
+		#		(spike_rect.left < ship_rect.right and vx < 0)
+		#	ship_rect.left = spike_rect.right + 1 if
+		#		(spike_rect.right > ship_rect.left and vx > 0)
+		#	@ship.accel = false 
+    #end
+    
+    # Draw everything
+    @spikes.draw @screen
     @goons.draw @screen
-
+    @ship.draw @screen
+    
     # Refresh the screen.
     @screen.update()
   end
