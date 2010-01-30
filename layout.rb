@@ -35,7 +35,7 @@ class LayoutGenerator
 				when "w"
 					place_wall wall, x, y, ship
 				when "s"
-					place_spike spike, x, y, ship
+					place_spike spikes, x, y, ship
 				when "g"
 					place_goons goons, x, y, ship
 				end
@@ -55,18 +55,18 @@ class LayoutGenerator
 		wall << Wall.new( x, y, ship )
 	end
 	
-	def place_spike(spike, x, y, ship)
-		ship << Spike.new( x, y, ship )
+	def place_spike(spikes, x, y, ship)
+		spikes << Spike.new( x, y, ship )
 	end
 	
 	def place_goons(goons, x, y, ship)
 		xtemp = 0
 		@goons.times do |i|
 			goons << Goon.new( x + xtemp, y, ship, RESOLUTION )
-  		xtemp += GOON[0]
+  		xtemp += GOON[0] * 2
   		if xtemp > SHIP[0]
   			xtemp = 0
-  			y += GOON[1]
+  			y += GOON[1] * 2
   		end
   	end
 	end

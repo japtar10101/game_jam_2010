@@ -7,6 +7,7 @@ require "model/group"
 require "model/spike"
 require "model/wall"
 require "global"
+require "layout"
 
 include Rubygame
 include Rubygame::Events
@@ -33,10 +34,13 @@ class Game
     make_clock
     make_queue
     make_event_hooks
-    make_ship
-    make_goons 0, 0, 16
-    make_spikes 6
-    make_walls 0
+    @ship = Ship.new( @screen.w/2, @screen.h/2, RESOLUTION )
+    make_magic_hooks_for( @ship, { YesTrigger.new() => :handle } )
+    @goons = Group.new
+    @spikes = Group.new
+    @walls = Group.new
+    @layout = LayoutGenerator.new
+    load_file('test.yaml')
   end
  
   # The "main loop". Repeat the #step method
@@ -49,6 +53,20 @@ class Game
     end
   end
  
+  def load_file(string)
+  	@layout.load_file(string)
+  	@layout.generate_layout(@ship, @goons, @walls, @spikes)
+    for goon in @goons 
+  		make_magic_hooks_for( goon, { YesTrigger.new() => :handle } )
+  	end
+  	for spike in @spikes 
+  		make_magic_hooks_for( spike, { YesTrigger.new() => :handle } )
+  	end
+  	for wall in @walls 
+  		make_magic_hooks_for( wall, { YesTrigger.new() => :handle } )
+  	end
+  end
+  
   private
  
   # Create a new Clock to manage the game framerate
@@ -88,58 +106,6 @@ class Game
   def make_screen flags
     @screen = Screen.open( RESOLUTION, 0, flags )
     @screen.title = "Trip Trap"
-  end
- 
-  # Create the player ship in the middle of the screen
-  def make_ship
-    @ship = Ship.new( @screen.w/2, @screen.h/2, RESOLUTION )
- 
-    # Make event hook to pass all events to @ship#handle().
-    make_magic_hooks_for( @ship, { YesTrigger.new() => :handle } )
-  end
-  
-  # Create the goons someplace in the screen
-  def make_goons x, y, num
-  	xtemp = 0
-  	@goons = Group.new
-  	num.times do |i|
-  		@goons << Goon.new( x + xtemp, y,
-  			@ship, RESOLUTION )
-  		xtemp += GOON[0]
-  		if xtemp > SHIP[0]
-  			xtemp = 0
-  			y += GOON[1]
-  		end
-  	end
-  	for goon in @goons 
-  		make_magic_hooks_for( goon, { YesTrigger.new() => :handle } )
-  	end
-  end
-  
-  # Create the spikes someplace in the screen
-  def make_spikes num
-  	max_x = RESOLUTION[0] - SHIP[0]
-  	max_y = RESOLUTION[1] - SHIP[1]
-  	@spikes = Group.new
-  	num.times do |i|
-  		@spikes << Spike.new( rand(max_x), rand(max_y), @ship )
-  	end
-  	for spike in @spikes 
-  		make_magic_hooks_for( spike, { YesTrigger.new() => :handle } )
-  	end
-  end
-  
-  # Create the walls someplace in the screen
-  def make_walls num
-  	max_x = RESOLUTION[0] - SHIP[0]
-  	max_y = RESOLUTION[1] - SHIP[1]
-  	@walls = Group.new
-  	num.times do |i|
-  		@walls << Wall.new( rand(max_x), rand(max_y), @ship )
-  	end
-  	for spike in @walls 
-  		make_magic_hooks_for( spike, { YesTrigger.new() => :handle } )
-  	end
   end
  
   # Quit the game

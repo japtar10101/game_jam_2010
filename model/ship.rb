@@ -43,7 +43,7 @@ class Ship
   end
   
   def placement(x, y)
-  	@px, @py = px, py # Current Position
+  	@px, @py = x, y # Current Position
     @vx, @vy = 0, 0 # Current Velocity
     @ax, @ay = 0, 0 # Current Acceleration
   	@rect.topleft = [@px, @py]
