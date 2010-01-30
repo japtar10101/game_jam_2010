@@ -24,9 +24,9 @@ class GoonGroup < Sprites::Group
   end
   
   def <<(goon)
-  	super << goon
   	goon.ship = @ship
   	make_magic_hooks_for( goon, { YesTrigger.new() => :handle } )
+  	#super << goon
   end
   
   private
