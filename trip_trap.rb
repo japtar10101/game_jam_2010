@@ -9,6 +9,13 @@ include Rubygame::Events
 include Rubygame::EventActions
 include Rubygame::EventTriggers
  
+puts 'Warning, images disabled' unless 
+  ($image_ok = (VERSIONS[:sdl_image] != nil))
+puts 'Warning, font disabled' unless 
+  ($font_ok = (VERSIONS[:sdl_ttf] != nil))
+puts 'Warning, sound disabled' unless
+  ($sound_ok = (VERSIONS[:sdl_mixer] != nil))
+  
 # The Game class helps organize thing. It takes events
 # from the queue and handles them, sometimes performing
 # its own action (e.g. Escape key = quit), but also
