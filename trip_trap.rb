@@ -32,7 +32,7 @@ class Game
     make_queue
     make_event_hooks
     make_ship
-    make_goons 8
+    make_goons 16
   end
  
   # The "main loop". Repeat the #step method
@@ -88,7 +88,7 @@ class Game
  
   # Create the player ship in the middle of the screen
   def make_ship
-    @ship = Ship.new( @screen.w/2, @screen.h/2 )
+    @ship = Ship.new( @screen.w/2, @screen.h/2, @screen.make_rect )
  
     # Make event hook to pass all events to @ship#handle().
     make_magic_hooks_for( @ship, { YesTrigger.new() => :handle } )
@@ -98,7 +98,8 @@ class Game
   def make_goons num
   	@goons = Group.new
   	num.times do |i|
-  		@goons << Goon.new( rand(RESOLUTION[0]), rand(RESOLUTION[1]), @ship )
+  		@goons << Goon.new( rand(RESOLUTION[0]), rand(RESOLUTION[1]),
+  			@ship, @screen.make_rect )
   	end
   	for goon in @goons 
   		make_magic_hooks_for( goon, { YesTrigger.new() => :handle } )
@@ -130,10 +131,23 @@ class Game
     # Draw the ship in its new position.
     @ship.draw( @screen )
  
+    #HACK: have goons detect each other
+    @goons.collide_self do |goon, check|
+    	check_rect = check.rect
+    	goon_rect = goon.rect
+    	xdiff = (check_rect.centerx - goon_rect.centerx).abs
+    	ydiff = (check_rect.centery - goon_rect.centery).abs
+    	#reflect
+			if xdiff > ydiff
+				#goon.pushy = -0.3 * goon.ay
+				goon.vy *= -0.3
+			else
+				#goon.pushx = -0.3 * goon.ax
+				goon.vx *= -0.3
+			end
+    end
+    
     @goons.draw @screen
-    #for goon in @goons
-    #	goon.draw( @screen )
-    #end
 
     # Refresh the screen.
     @screen.update()

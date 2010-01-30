@@ -15,12 +15,14 @@ class Ship
   include Sprites::Sprite
   include EventHandler::HasEventHandler
  
- 
-  def initialize( px, py )
+  attr_accessor :pushx, :pushy
+  attr_reader :ax, :ay, :vx, :vy
+  def initialize( px, py, screen_rect )
     @px, @py = px, py # Current Position
     @vx, @vy = 0, 0 # Current Velocity
     @ax, @ay = 0, 0 # Current Acceleration
- 
+    @pushx, @pushy = 0, 0 # Controlled Acceleration
+    
     @max_speed = 400.0 # Max speed on an axis
     @accel = 1200.0 # Max Acceleration on an axis
     @slowdown = 800.0 # Deceleration when not accelerating
@@ -32,7 +34,8 @@ class Ship
     @image = Surface.new([20,20])
     @image.fill(:white)
     @rect = @image.make_rect
- 
+    @screenx = screen_rect.right
+    @screeny = screen_rect.bottom
  
     # Create event hooks in the easiest way.
     make_magic_hooks(
@@ -75,19 +78,18 @@ class Ship
  
   # Update the acceleration based on what keys are pressed.
   def update_accel
-    x, y = 0,0
- 
-    x -= 1 if @keys.include?( :left )
-    x += 1 if @keys.include?( :right )
-    y -= 1 if @keys.include?( :up ) # up is down in screen coordinates
-    y += 1 if @keys.include?( :down )
+    @pushx -= 1 if @keys.include?( :left )
+    @pushx += 1 if @keys.include?( :right )
+    @pushy -= 1 if @keys.include?( :up ) # up is down in screen coordinates
+    @pushy += 1 if @keys.include?( :down )
  
     # Scale to the acceleration rate. This is a bit unrealistic, since
     # it doesn't consider magnitude of x and y combined (diagonal).
-    x *= @accel
-    y *= @accel
+    @pushx *= @accel
+    @pushy *= @accel
  
-    @ax, @ay = x, y
+    @ax, @ay = @pushx, @pushy
+    @pushx, @pushy = 0, 0
   end
  
  
@@ -135,6 +137,16 @@ class Ship
     @px += @vx * dt
     @py += @vy * dt
  
+    if @px < 0
+    	@px = @screenx
+    elsif @px > @screenx
+    	@px = 0
+    end
+    if @py < 0
+    	@py = @screeny
+    elsif @py > @screeny
+    	@py = 0
+    end
     @rect.center = [@px, @py]
   end
  

@@ -14,9 +14,11 @@ include Rubygame::EventTriggers
 class Goon
 	include Sprites::Sprite
   include EventHandler::HasEventHandler
- 
-  attr_accessor :ship, :pushx, :pushy
-  def initialize( px, py, ship=nil )
+  PUSH = 5
+  
+  attr_accessor :ship, :pushx, :pushy, :vx, :vy
+  attr_reader :ax, :ay
+  def initialize( px, py, ship, screen_rect )
     @px, @py = px, py # Current Position
     @vx, @vy = 0, 0 # Current Velocity
     @ax, @ay = 0, 0 # Current Acceleration
@@ -30,7 +32,9 @@ class Goon
     @image.fill(:white)
     @rect = @image.make_rect
     @ship = ship
- 
+    @screenx = screen_rect.right
+    @screeny = screen_rect.bottom
+    
     # Create event hooks in the easiest way.
     make_magic_hooks(
       ClockTicked => :update
@@ -52,18 +56,20 @@ class Goon
   # Update the acceleration based on what keys are pressed.
   def update_accel
     ship_rect = @ship.rect
+    goonx = @rect.centerx
+    goony = @rect.centery
     #left
-    if ship_rect.centerx < @rect.centerx
+    if ship_rect.centerx < goonx
     	@pushx -= 1
     #right
-    elsif ship_rect.centerx > @rect.centerx
+    elsif ship_rect.centerx > goonx
     	@pushx += 1
     end
     #up
-    if ship_rect.centery < @rect.centery
+    if ship_rect.centery < goony
     	@pushy -= 1
     #down
-    elsif ship_rect.centery > @rect.centery
+    elsif ship_rect.centery > goony
     	@pushy += 1
     end
  
@@ -72,6 +78,24 @@ class Goon
     @pushx *= @accel
     @pushy *= @accel
  
+    #implement reflection
+    if(@ship.collide_sprite?(self))
+			if (goony > ship_rect.top and @vy < 0)
+				@pushy *= -1
+				@ship.pushy -= PUSH
+			elsif (goony < ship_rect.bottom and @vy >= 0)
+				@pushy *= -1
+				@ship.pushy += PUSH
+			end
+			if (goonx > ship_rect.right and @vx < 0)
+				@pushx *= -1
+				@ship.pushx -= PUSH
+			elsif (goonx < ship_rect.left and @vx >= 0)
+				@pushx *= -1
+				@ship.pushx += PUSH
+			end
+		end
+			
     @ax, @ay = @pushx, @pushy
     @pushx, @pushy = 0, 0
   end
@@ -121,6 +145,16 @@ class Goon
     @px += @vx * dt
     @py += @vy * dt
  
+    if @px < 0
+    	@px = @screenx
+    elsif @px > @screenx
+    	@px = 0
+    end
+    if @py < 0
+    	@py = @screeny
+    elsif @py > @screeny
+    	@py = 0
+    end
     @rect.center = [@px, @py]
   end
  
