@@ -29,7 +29,6 @@ class Ship
     @image = Surface.new(SHIP)
     @image.fill(:white)
     @rect = @image.make_rect
-    @accel = true
     
     # Create event hooks in the easiest way.
     make_magic_hooks(
@@ -63,19 +62,16 @@ class Ship
   def update( event )
     dt = event.seconds # Time since last update
  
-    if @accel
-			update_accel
-			update_vel( dt )
-			update_pos( dt )
-		else
-			#@rect.center = [@px, @py]
-			@accel = true
-		end
+		update_accel
+		update_vel dt 
+		update_pos dt 
   end
  
  
   # Update the acceleration based on what keys are pressed.
   def update_accel
+  	@pushx = 0 unless(@pushx)
+  	@pushy = 0 unless(@pushy)
     @pushx -= 1 if @keys.include?( :left )
     @pushx += 1 if @keys.include?( :right )
     @pushy -= 1 if @keys.include?( :up ) # up is down in screen coordinates

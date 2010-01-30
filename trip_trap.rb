@@ -5,6 +5,7 @@ require "model/ship"
 require "model/goon"
 require "model/group"
 require "model/spike"
+require "model/wall"
 require "global"
 
 include Rubygame
@@ -35,6 +36,7 @@ class Game
     make_ship
     make_goons 0, 0, 16
     make_spikes 6
+    make_walls 6
   end
  
   # The "main loop". Repeat the #step method
@@ -126,6 +128,19 @@ class Game
   		make_magic_hooks_for( spike, { YesTrigger.new() => :handle } )
   	end
   end
+  
+  # Create the walls someplace in the screen
+  def make_walls num
+  	max_x = RESOLUTION[0] - SHIP[0]
+  	max_y = RESOLUTION[1] - SHIP[1]
+  	@walls = Group.new
+  	num.times do |i|
+  		@walls << Wall.new( rand(max_x), rand(max_y), @ship )
+  	end
+  	for spike in @walls 
+  		make_magic_hooks_for( spike, { YesTrigger.new() => :handle } )
+  	end
+  end
  
   # Quit the game
   def quit
@@ -150,6 +165,20 @@ class Game
     end
  
     # have goons bounce off of each other
+    @goons.collide_group(@walls) do |goon, check|
+    	check_rect = check.rect
+    	goon_rect = goon.rect
+    	xdiff = (check_rect.centerx - goon_rect.centerx).abs
+    	ydiff = (check_rect.centery - goon_rect.centery).abs
+    	#reflect
+			if xdiff > ydiff
+				#goon.pushy = -1 * goon.ay
+				goon.vy *= -1
+			else
+				#goon.pushx = -1 * goon.ax
+				goon.vx *= -1
+			end
+    end
     @goons.collide_self do |goon, check|
     	check_rect = check.rect
     	goon_rect = goon.rect
@@ -170,23 +199,8 @@ class Game
     	goon.dead = true
     end
     
-    #ship_rect = @ship.rect
-    #vy = @ship.vy
-    #vx = @ship.vx
-    #@spikes.collide_sprite(@ship) do |spike|
-    #	spike_rect = spike.rect
-    #	ship_rect.top = spike_rect.bottom - 1 if
-    #		(spike_rect.bottom > ship_rect.top and vy < 0)
-		#	ship_rect.bottom = spike_rect.top + 1 if
-		#		(spike_rect.top < ship_rect.bottom and vy > 0)
-		#	ship_rect.right = spike_rect.left - 1 if
-		#		(spike_rect.left < ship_rect.right and vx < 0)
-		#	ship_rect.left = spike_rect.right + 1 if
-		#		(spike_rect.right > ship_rect.left and vx > 0)
-		#	@ship.accel = false 
-    #end
-    
     # Draw everything
+    @walls.draw @screen
     @spikes.draw @screen
     @goons.draw @screen
     @ship.draw @screen
