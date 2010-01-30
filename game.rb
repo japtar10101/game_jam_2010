@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'rubygame'
-require 'controller'
 
 include Rubygame
 
