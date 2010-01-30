@@ -1,8 +1,8 @@
 title: testing
-goons: 2
+goons: 10
 comment: "Just a testing layout..."
 layout: --- |
-- "                                        "
+- "g                                      g"
 - "                                        "
 - "                                        "
 - "                                        "
@@ -25,5 +25,5 @@ layout: --- |
 - "                                        "
 - "                                        "
 - "                                        "
-- "g                                       "
+- "g                                      g"
 

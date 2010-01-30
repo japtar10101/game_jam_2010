@@ -6,6 +6,7 @@ require "model/goon"
 require "model/group"
 require "model/spike"
 require "model/wall"
+require "model/status"
 require "global"
 require "layout"
 
@@ -40,6 +41,7 @@ class Game
     @spikes = Group.new
     @walls = Group.new
     @layout = LayoutGenerator.new
+    @status = Status.new(@screen)
     load_file('levels/test.yaml')
   end
  
@@ -126,14 +128,11 @@ class Game
     end
     
     # check if any goons are alive
-    win = true
+    num_goons = 0
     for goon in @goons
-    	unless goon.dead
-    		win = false
-    		break 
-    	end
+    	num_goons += 1 unless goon.dead
     end
-    if win
+    if num_goons == 0
     	puts 'You won!'
     	quit
     end
@@ -185,6 +184,7 @@ class Game
     end
     
     # Draw everything
+    @status.render_text @ship.health.to_s, num_goons.to_s
     @spikes.draw @screen
     @walls.draw @screen
     @goons.draw @screen
@@ -202,3 +202,4 @@ Game.new.go
  
 # Make sure everything is cleaned up properly.
 Rubygame.quit()
+

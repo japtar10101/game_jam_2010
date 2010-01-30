@@ -17,7 +17,7 @@ class Ship
   include EventHandler::HasEventHandler
  
   attr_accessor :pushx, :pushy, :accel
-  attr_reader :ax, :ay, :vx, :vy
+  attr_reader :ax, :ay, :vx, :vy, :health
   def initialize( px, py, screen_rect )
     @px, @py = px, py # Current Position
     @vx, @vy = 0, 0 # Current Velocity
