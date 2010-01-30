@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require "rubygame"
+require "fix_group"
 
 # Include these modules so we can type "Surface" instead of
 # "Rubygame::Surface", etc. Purely for convenience/readability.
@@ -9,8 +10,7 @@ include Rubygame
 include Rubygame::EventTriggers
 
 # collision detection for goons
-class GoonGroup < Sprites::Group
-  include Sprites::UpdateGroup
+class GoonGroup < FixGroup
   include EventHandler::HasEventHandler
   
   def initialize( ship )
@@ -26,7 +26,11 @@ class GoonGroup < Sprites::Group
   def <<(goon)
   	goon.ship = @ship
   	make_magic_hooks_for( goon, { YesTrigger.new() => :handle } )
-  	#super << goon
+  	super << goon
+  end
+  
+  def include? goon
+  	super.include? goon
   end
   
   private

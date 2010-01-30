@@ -90,12 +90,12 @@ class Game
   
   # Create the goons someplace in the screen
   def make_goons num
-  	@goons = GoonGroup.new @ship
-  	num.times do |i|
-  		goon = Goon.new( rand(RESOLUTION[0]), rand(RESOLUTION[1]) )
-  		@goons << goon
-		end
-		make_magic_hooks_for( @goons, { YesTrigger.new() => :handle } )
+  	@goons = Array.new(num) do |i|
+  		Goon.new( rand(RESOLUTION[0]), rand(RESOLUTION[1]), @ship )
+  	end
+  	for goon in @goons 
+  		make_magic_hooks_for( goon, { YesTrigger.new() => :handle } )
+  	end
   end
  
   # Quit the game
@@ -123,10 +123,9 @@ class Game
     # Draw the ship in its new position.
     @ship.draw( @screen )
  
-    @goons.draw(@screen)
-    #for goon in @goons
-    #	goon.draw( @screen )
-    #end
+    for goon in @goons
+    	goon.draw( @screen )
+    end
 
     # Refresh the screen.
     @screen.update()

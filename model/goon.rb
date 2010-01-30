@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require "rubygame"
+require "fix_sprite"
 
 # Include these modules so we can type "Surface" instead of
 # "Rubygame::Surface", etc. Purely for convenience/readability.
@@ -11,8 +12,7 @@ include Rubygame::EventActions
 include Rubygame::EventTriggers
  
 # A class representing the player's ship moving in "space".
-class Goon
-  include Sprites::Sprite
+class Goon < MySprite
   include EventHandler::HasEventHandler
  
   attr_accessor :ship, :pushx, :pushy
