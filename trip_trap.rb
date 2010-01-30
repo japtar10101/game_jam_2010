@@ -4,6 +4,7 @@ require "rubygame"
 require "model/ship"
 require "model/goon"
 require "model/group"
+require "global"
 
 include Rubygame
 include Rubygame::Events
@@ -22,7 +23,6 @@ puts 'Warning, sound disabled' unless
 # its own action (e.g. Escape key = quit), but also
 # passing the events to the pandas to handle.
 #
-RESOLUTION = [800, 800]
 class Game
   include EventHandler::HasEventHandler
  
@@ -88,7 +88,7 @@ class Game
  
   # Create the player ship in the middle of the screen
   def make_ship
-    @ship = Ship.new( @screen.w/2, @screen.h/2, @screen.make_rect )
+    @ship = Ship.new( @screen.w/2, @screen.h/2, RESOLUTION )
  
     # Make event hook to pass all events to @ship#handle().
     make_magic_hooks_for( @ship, { YesTrigger.new() => :handle } )
@@ -99,7 +99,7 @@ class Game
   	@goons = Group.new
   	num.times do |i|
   		@goons << Goon.new( rand(RESOLUTION[0]), rand(RESOLUTION[1]),
-  			@ship, @screen.make_rect )
+  			@ship, RESOLUTION )
   	end
   	for goon in @goons 
   		make_magic_hooks_for( goon, { YesTrigger.new() => :handle } )

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
  
 require "rubygame"
+require "global"
 
 # Include these modules so we can type "Surface" instead of
 # "Rubygame::Surface", etc. Purely for convenience/readability.
@@ -22,7 +23,7 @@ class Ship
     @vx, @vy = 0, 0 # Current Velocity
     @ax, @ay = 0, 0 # Current Acceleration
     @pushx, @pushy = 0, 0 # Controlled Acceleration
-    
+               
     @max_speed = 400.0 # Max speed on an axis
     @accel = 1200.0 # Max Acceleration on an axis
     @slowdown = 800.0 # Deceleration when not accelerating
@@ -34,8 +35,6 @@ class Ship
     @image = Surface.new([20,20])
     @image.fill(:white)
     @rect = @image.make_rect
-    @screenx = screen_rect.right
-    @screeny = screen_rect.bottom
  
     # Create event hooks in the easiest way.
     make_magic_hooks(
@@ -138,13 +137,13 @@ class Ship
     @py += @vy * dt
  
     if @px < 0
-    	@px = @screenx
-    elsif @px > @screenx
+    	@px = RESOLUTION[0]
+    elsif @px > RESOLUTION[0]
     	@px = 0
     end
     if @py < 0
-    	@py = @screeny
-    elsif @py > @screeny
+    	@py = RESOLUTION[1]
+    elsif @py > RESOLUTION[1]
     	@py = 0
     end
     @rect.center = [@px, @py]
