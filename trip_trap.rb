@@ -3,7 +3,6 @@
 require "rubygame"
 require "model/ship"
 require "model/goon"
-require "model/goon_group"
 
 include Rubygame
 include Rubygame::Events
@@ -55,7 +54,6 @@ class Game
   def make_event_hooks
     hooks = {
       :escape => :quit,
-      :q => :quit,
       QuitRequested => :quit
     }
  
