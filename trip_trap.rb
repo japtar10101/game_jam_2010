@@ -118,6 +118,25 @@ class Game
   def step
     # Clear the screen.
     @screen.fill( :black )
+    
+    # Check if the ship died
+    if @ship.is_dead?
+    	puts "You've been gooned!"
+    	quit
+    end
+    
+    # check if any goons are alive
+    win = true
+    for goon in @goons
+    	unless goon.dead
+    		win = false
+    		break 
+    	end
+    end
+    if win
+    	puts 'You won!'
+    	quit
+    end
  
     # Fetch input events, etc. from SDL, and add them to the queue.
     @queue.fetch_sdl_events
@@ -166,10 +185,10 @@ class Game
     end
     
     # Draw everything
-    @goons.draw @screen
-    @ship.draw @screen
     @spikes.draw @screen
     @walls.draw @screen
+    @goons.draw @screen
+    @ship.draw @screen
     
     # Refresh the screen.
     @screen.update()

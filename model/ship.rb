@@ -29,6 +29,8 @@ class Ship
     @image = Surface.new(SHIP)
     @image.fill(:white)
     @rect = @image.make_rect
+    @health = SHIP_HEALTH
+    @invulnerable = 0
     
     # Create event hooks in the easiest way.
     make_magic_hooks(
@@ -46,9 +48,21 @@ class Ship
   	@px, @py = x, y # Current Position
     @vx, @vy = 0, 0 # Current Velocity
     @ax, @ay = 0, 0 # Current Acceleration
+    @health = SHIP_HEALTH
   	@rect.topleft = [@px, @py]
   end
- 
+  
+  def hit
+  	if @invulnerable <= 0
+  		@health -= 1
+  		@invulnerable = SHIP_INVULNERABLE
+  	end
+  end
+
+  def is_dead?
+  	@health <= 0
+  end
+  
   private
  
  
@@ -70,7 +84,9 @@ class Ship
  
 		update_accel
 		update_vel dt 
-		update_pos dt 
+		update_pos dt
+		
+		@invulnerable -= 1 if @invulnerable > 0
   end
  
  

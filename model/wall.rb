@@ -34,17 +34,17 @@ class Wall
     vy = @ship.vy
     vx = @ship.vx
     
-  	#implement repulsion
+  	#TODO: make the ship halt instead, of bounce
     if(@ship.collide_sprite?(self))
     	if (@rect.bottom > ship_rect.top and vy < 0)
-				@ship.pushy *= -1
+				@ship.pushy += SPIKE_PUSH
 			elsif (@rect.top < ship_rect.bottom and vy > 0)
-				@ship.pushy *= -1
+				@ship.pushy -= SPIKE_PUSH
 			end
 			if (@rect.left < ship_rect.right and vx < 0)
-				@ship.pushx *= -1
+				@ship.pushx += SPIKE_PUSH
 			elsif (@rect.right > ship_rect.left and vx > 0)
-				@ship.pushx *= -1
+				@ship.pushx -= SPIKE_PUSH
 			end
 		end
   end

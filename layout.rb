@@ -24,7 +24,7 @@ class LayoutGenerator
 		walls.clear
 		spikes.clear
 		
-		y = 0
+		y = SHIP[1]
 		@layout.each do |string|
 			x = 0
 			string.length.times do |i|
@@ -33,7 +33,7 @@ class LayoutGenerator
 				when "h"
 					place_ship ship, x, y
 				when "w"
-					place_wall wall, x, y, ship
+					place_wall walls, x, y, ship
 				when "s"
 					place_spike spikes, x, y, ship
 				when "g"

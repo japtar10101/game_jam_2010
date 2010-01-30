@@ -46,6 +46,7 @@ class Spike
 			elsif (@rect.right > ship_rect.left and vx > 0)
 				@ship.pushx -= SPIKE_PUSH
 			end
+			@ship.hit
 		end
   end
 end
