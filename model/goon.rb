@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
- 
+
 require "rubygame"
 
 # Include these modules so we can type "Surface" instead of
@@ -11,58 +11,34 @@ include Rubygame::EventActions
 include Rubygame::EventTriggers
  
 # A class representing the player's ship moving in "space".
-class Ship
+class Goon
   include Sprites::Sprite
   include EventHandler::HasEventHandler
  
- 
-  def initialize( px, py )
+  attr_accessor :ship, :pushx, :pushy
+  def initialize( px, py, ship=nil )
     @px, @py = px, py # Current Position
     @vx, @vy = 0, 0 # Current Velocity
     @ax, @ay = 0, 0 # Current Acceleration
+    @pushx, @pushy = 0, 0 # Controlled Acceleration
  
     @max_speed = 400.0 # Max speed on an axis
     @accel = 1200.0 # Max Acceleration on an axis
     @slowdown = 800.0 # Deceleration when not accelerating
  
-    @keys = [] # Keys being pressed
- 
- 
-    # The ship's appearance. A white square for demonstration.
-    @image = Surface.new([20,20])
+    @image = Surface.new([5,5])
     @image.fill(:white)
     @rect = @image.make_rect
- 
+    @ship = ship
  
     # Create event hooks in the easiest way.
     make_magic_hooks(
- 
-      # Send keyboard events to #key_pressed() or #key_released().
-      KeyPressed => :key_pressed,
-      KeyReleased => :key_released,
- 
-      # Send ClockTicked events to #update()
       ClockTicked => :update
- 
     )
   end
  
  
   private
- 
- 
-  # Add it to the list of keys being pressed.
-  def key_pressed( event )
-    @keys += [event.key]
-  end
- 
- 
-  # Remove it from the list of keys being pressed.
-  def key_released( event )
-    @keys -= [event.key]
-  end
- 
- 
   # Update the ship state. Called once per frame.
   def update( event )
     dt = event.seconds # Time since last update
@@ -75,19 +51,29 @@ class Ship
  
   # Update the acceleration based on what keys are pressed.
   def update_accel
-    x, y = 0,0
- 
-    x -= 1 if @keys.include?( :left )
-    x += 1 if @keys.include?( :right )
-    y -= 1 if @keys.include?( :up ) # up is down in screen coordinates
-    y += 1 if @keys.include?( :down )
+    ship_rect = @ship.rect
+    #left
+    if ship_rect.centerx < @rect.centerx
+    	@pushx -= 1
+    #right
+    elsif ship_rect.centerx > @rect.centerx
+    	@pushx += 1
+    end
+    #up
+    if ship_rect.centery < @rect.centery
+    	@pushy -= 1
+    #down
+    elsif ship_rect.centery > @rect.centery
+    	@pushy += 1
+    end
  
     # Scale to the acceleration rate. This is a bit unrealistic, since
     # it doesn't consider magnitude of x and y combined (diagonal).
-    x *= @accel
-    y *= @accel
+    @pushx *= @accel
+    @pushy *= @accel
  
-    @ax, @ay = x, y
+    @ax, @ay = @pushx, @pushy
+    @pushx, @pushy = 0, 0
   end
  
  

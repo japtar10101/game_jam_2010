@@ -2,6 +2,8 @@
  
 require "rubygame"
 require "model/ship"
+require "model/goon"
+require "model/goon_group"
 
 include Rubygame
 include Rubygame::Events
@@ -13,6 +15,7 @@ include Rubygame::EventTriggers
 # its own action (e.g. Escape key = quit), but also
 # passing the events to the pandas to handle.
 #
+RESOLUTION = [800, 800]
 class Game
   include EventHandler::HasEventHandler
  
@@ -22,8 +25,8 @@ class Game
     make_queue
     make_event_hooks
     make_ship
+    make_goons 8
   end
- 
  
   # The "main loop". Repeat the #step method
   # over and over and over until the user quits.
@@ -35,9 +38,7 @@ class Game
     end
   end
  
- 
   private
- 
  
   # Create a new Clock to manage the game framerate
   # so it doesn't use 100% of the CPU
@@ -61,7 +62,6 @@ class Game
     make_magic_hooks( hooks )
   end
  
- 
   # Create an EventQueue to take events from the keyboard, etc.
   # The events are taken from the queue and passed to objects
   # as part of the main loop.
@@ -74,13 +74,11 @@ class Game
     @queue.ignore = [MouseMoved]
   end
  
- 
   # Create the Rubygame window.
   def make_screen
-    @screen = Screen.open( [640, 480] )
+    @screen = Screen.open( RESOLUTION )
     @screen.title = "Trip Trap"
   end
- 
  
   # Create the player ship in the middle of the screen
   def make_ship
@@ -89,14 +87,22 @@ class Game
     # Make event hook to pass all events to @ship#handle().
     make_magic_hooks_for( @ship, { YesTrigger.new() => :handle } )
   end
- 
+  
+  # Create the goons someplace in the screen
+  def make_goons num
+  	@goons = GoonGroup.new @ship
+  	num.times do |i|
+  		goon = Goon.new( rand(RESOLUTION[0]), rand(RESOLUTION[1]) )
+  		@goons << goon
+		end
+		make_magic_hooks_for( @goons, { YesTrigger.new() => :handle } )
+  end
  
   # Quit the game
   def quit
     puts "Quitting!"
     throw :quit
   end
- 
  
   # Do everything needed for one frame.
   def step
@@ -117,17 +123,20 @@ class Game
     # Draw the ship in its new position.
     @ship.draw( @screen )
  
+    @goons.draw(@screen)
+    #for goon in @goons
+    #	goon.draw( @screen )
+    #end
+
     # Refresh the screen.
     @screen.update()
   end
  
 end
  
- 
 # Start the main game loop. It will repeat forever
 # until the user quits the game!
 Game.new.go
- 
  
 # Make sure everything is cleaned up properly.
 Rubygame.quit()
