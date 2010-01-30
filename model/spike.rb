@@ -36,7 +36,7 @@ class Spike
     
   	#implement repulsion
     if(@ship.collide_sprite?(self))
-    if (@rect.bottom > ship_rect.top and vy < 0)
+    	if (@rect.bottom > ship_rect.top and vy < 0)
 				@ship.pushy += SPIKE_PUSH
 			elsif (@rect.top < ship_rect.bottom and vy > 0)
 				@ship.pushy -= SPIKE_PUSH
