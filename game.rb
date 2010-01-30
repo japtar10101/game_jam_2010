@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
-require 'rubygems'
+
 require 'rubygame'
+require 'model/hero'
+require 'view/view'
 
 include Rubygame
 
-RESOLUTION = [640,480]
 class Game
 	def initialize
-		@screen = Screen.new(RESOLUTION, 0,
-			[Rubygame::HWSURFACE, Rubygame::DOUBLEBUF])
+		@screen = Screen.new(RESOLUTION, 0, [HWSURFACE, DOUBLEBUF])
 		@screen.title = "This is not a game"
 		@screen.fill( :white )
 
@@ -19,6 +19,7 @@ class Game
 		if(defined?(Surface.load) == nil)
 			raise "Cannot upload images!"
 		end
+		@hero = Hero.new
 	end
 
 	def run
