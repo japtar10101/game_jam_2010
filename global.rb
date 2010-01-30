@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-RESOLUTION = [1200, 800]
+RESOLUTION = [1280, 800]
 SHIP = [32, 32]
 SPIKE = SHIP
 GOON = [8, 8]

@@ -41,7 +41,13 @@ class Ship
       ClockTicked => :update
     )
   end
- 
+  
+  def placement(x, y)
+  	@px, @py = px, py # Current Position
+    @vx, @vy = 0, 0 # Current Velocity
+    @ax, @ay = 0, 0 # Current Acceleration
+  	@rect.topleft = [@px, @py]
+  end
  
   private
  
@@ -55,7 +61,7 @@ class Ship
   # Remove it from the list of keys being pressed.
   def key_released( event )
     @keys -= [event.key]
-  end
+  end           
  
  
   # Update the ship state. Called once per frame.

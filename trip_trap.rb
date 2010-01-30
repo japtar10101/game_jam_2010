@@ -36,7 +36,7 @@ class Game
     make_ship
     make_goons 0, 0, 16
     make_spikes 6
-    make_walls 6
+    make_walls 0
   end
  
   # The "main loop". Repeat the #step method
