@@ -1,6 +1,13 @@
 #!/usr/bin/env ruby
  
 require "rubygame"
+require "model/ship"
+require "model/goon"
+require "model/group"
+require "model/spike"
+require "model/wall"
+require "model/status"
+require "model/menu"
 require "model/image"
 require "global"
 require "layout"
@@ -16,42 +23,34 @@ puts 'Warning, font disabled' unless
   ($font_ok = (VERSIONS[:sdl_ttf] != nil))
 puts 'Warning, sound disabled' unless
   ($sound_ok = (VERSIONS[:sdl_mixer] != nil))
-  
-# The Game class helps organize thing. It takes events
-# from the queue and handles them, sometimes performing
-# its own action (e.g. Escape key = quit), but also
-# passing the events to the pandas to handle.
-#
+
+# main executable
 class Game
   include EventHandler::HasEventHandler
- 
-  def initialize(layout = nil)
+  def initialize()
     make_screen [DOUBLEBUF]
     make_clock
     make_queue
     make_event_hooks
-    if layout
-    	@layout = layout
-    else
-    	@layout = LayoutGenerator.new
-    end
-    @layout.load_file('levels/middle.yaml')
-    @menu = Image.new
-    #@menu.
+    @@state = STATE_TITLE
+    @layout = LayoutGenerator.new
+    #@layout.load_file()
+    
+    
+    #@menu = Image.new
   end
- 
+  
   # The "main loop". Repeat the #step method
   # over and over and over until the user quits.
-  def go
+  def run
     catch(:quit) do
       loop do
         step
       end
     end
   end
- 
+  
   private
- 
   # Create a new Clock to manage the game framerate
   # so it doesn't use 100% of the CPU
   def make_clock
@@ -89,13 +88,13 @@ class Game
     @screen = Screen.open( RESOLUTION, 0, flags )
     @screen.title = "Trip Trap"
   end
- 
+  
   # Quit the game
   def quit
     puts "Quitting!"
     throw :quit
   end
- 
+  
   # Do everything needed for one frame.
   def step
     # Clear the screen.
@@ -112,18 +111,16 @@ class Game
       handle( event )
     end
     
-    # Draw everything
-    @menu.draw @screen
+    # TODO: Draw everything
     
     # Refresh the screen.
     @screen.update()
   end
 end
- 
+
 # Start the main game loop. It will repeat forever
 # until the user quits the game!
-Game.new.go
+Game.new.run
  
 # Make sure everything is cleaned up properly.
 Rubygame.quit()
-
