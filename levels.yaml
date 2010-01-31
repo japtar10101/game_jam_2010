@@ -1,5 +1,11 @@
 - 
-	file: "levels/testing.yaml"
+	file: "levels/cage.yaml"
+	complete: false
+-
+	file: "levels/center.yaml"
+	complete: false
+-
+	file: "levels/thin_cooridor.yaml"
 	complete: false
 -
 	file: "levels/thin_cooridor.yaml"
