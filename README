@@ -5,5 +5,10 @@ Programming language is Ruby.
 Dependecies are:
 Ruby
 Rubygems
-RubyGame
+RubyGame (gem install rubygame)
 
+If you're using a unix system, run:
+trip_trap.rb
+
+If on Windows, then use the ruby interpretter:
+ruby trip_trap.rb
