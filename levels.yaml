@@ -8,4 +8,5 @@
 - {file: "levels/bees.yaml", complete: false}
 - {file: "levels/lines.yaml", complete: false}
 - {file: "levels/minefield.yaml", complete: false}
+- {file: "levels/credits.yaml", complete: false}
 
