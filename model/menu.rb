@@ -17,20 +17,18 @@ class Menu
     else
     	@layout = LayoutGenerator.new
     end
-    @intro = true
     
     #store level data
     @levels = YAML.load_file LEVEL_FILE
-    puts @levels
     
     #setup items and index to display
-    @items = Array.new(2)
+    @items = Array.new()
     set_items_to_intro
     @index = 0
     
     #load an image
-    @image = Surface.load('sprites/logo.png')
-    @rect = @image.make_rect
+    #@image = Surface.load('sprites/logo.png')
+    @rect = Rect.new
     @rect.topleft = [0,0]
     
     # Create event hooks in the easiest way.
@@ -45,7 +43,7 @@ class Menu
 	end
 	
 	def draw(screen)
-		@image.blit(screen, self.rect)
+		#@image.blit(screen, self.rect)
 		y = MENU_Y
 		@items.each_index do |i|
 			string = @items[i]
@@ -65,8 +63,12 @@ class Menu
 	def set_items_to_intro
 		@index = 0
 		@items.clear
-		@items << "Start"
 		@items << "How to Play"
+		for hash in @levels
+			filename = hash["file"]
+			@layout.load_file(filename)
+			@items << @layout.title
+		end
 	end
 	
 	# Add it to the list of keys being pressed.

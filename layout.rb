@@ -4,6 +4,8 @@ require "yaml"
 require "global"
 
 class LayoutGenerator
+	
+	attr_reader :title, :goons, :comment, :layout
 	def initialize()
 		@title
 		@goons

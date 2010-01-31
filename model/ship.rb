@@ -85,8 +85,16 @@ class Ship
 		update_accel
 		update_vel dt 
 		update_pos dt
-		
-		@invulnerable -= 1 if @invulnerable > 0
+		if @invulnerable > 0
+			if @invulnerable % 6 == 0
+				@image.fill(:white)
+			elsif @invulnerable % 6 == 3
+				@image.fill(:red) 
+			end
+			@invulnerable -= 1
+		else
+			@image.fill(:white)
+		end
   end
  
  

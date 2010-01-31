@@ -25,7 +25,7 @@ class Goon
     @pushx, @pushy = 0, 0 # Controlled Acceleration
  
     @image = Surface.new(GOON,0)
-    @image.fill(:white)
+    @image.fill(:yellow)
     @rect = @image.make_rect
     @ship = ship
     @dead = false
