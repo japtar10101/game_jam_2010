@@ -133,6 +133,7 @@ class TripTrap
   			@state = STATE_GAME
   			@game.load_layout()
   		else
+  			@image.set_image 'sprites/directions.png'
   			@state = STATE_DIRECTIONS
   		end
   		@menu.activate false
