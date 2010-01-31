@@ -20,7 +20,8 @@ class Menu
     @intro = true
     
     #store level data
-    @levels = YAML.load_file filename
+    @levels = YAML.load_file LEVEL_FILE
+    puts @levels
     
     #setup items and index to display
     @items = Array.new(2)
@@ -28,20 +29,36 @@ class Menu
     @index = 0
     
     #load an image
-    @image = Surface.load('sprites/spikes.png')
-    @image.fill(:white)
+    @image = Surface.load('sprites/logo.png')
     @rect = @image.make_rect
+    @rect.topleft = [0,0]
     
     # Create event hooks in the easiest way.
     make_magic_hooks(
- 
-      # Send keyboard events to #key_pressed() or #key_released().
-      KeyPressed => :key_pressed,
-      KeyReleased => :key_released,
+    	#go through menu items
+      :up => :up_item,
+      :down => :down_item,
  
       # Send ClockTicked events to #update()
       ClockTicked => :update
     )
+	end
+	
+	def draw(screen)
+		@image.blit(screen, self.rect)
+		y = MENU_Y
+		@items.each_index do |i|
+			string = @items[i]
+			result = nil
+			if i == @index
+				result = FONT.render( string, true, SELECT_COLOR )
+			else
+				result = FONT.render( string, true, STATUS_COLOR )
+			end
+			x = RESOLUTION[0] / 2 - result.width / 2
+			result.blit( screen, [x , y] )
+			y += result.height
+		end
 	end
 	
 	private
@@ -53,24 +70,19 @@ class Menu
 	end
 	
 	# Add it to the list of keys being pressed.
-  def key_pressed( event )
-    @keys += [event.key]
+  def up_item
+    @index -= 1
+    @index = @items.length - 1 if @index < 0
   end
  
  
   # Remove it from the list of keys being pressed.
-  def key_released( event )
-    @keys -= [event.key]
+  def down_item
+    @index += 1
+    @index = 0 if @index >= @items.length
   end
 	
   # Update the ship state. Called once per frame.
   def update( event )
-    dt = event.seconds # Time since last update
- 
-		update_accel
-		update_vel dt 
-		update_pos dt
-		
-		@invulnerable -= 1 if @invulnerable > 0
   end
 end

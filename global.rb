@@ -27,4 +27,5 @@ TTF.setup()
 ttfont_path = File.join(File.dirname(__FILE__), STATUS_FONT)
 FONT = TTF.new( ttfont_path, STATUS_SIZE )
 LEVEL_FILE = "levels.yaml"
-
+SELECT_COLOR = [250,250,50]
+MENU_Y = 640
