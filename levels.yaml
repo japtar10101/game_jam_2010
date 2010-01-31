@@ -1,8 +1,9 @@
+- {file: "levels/rain.yaml", complete: false}
+- {file: "levels/plain.yaml", complete: false}
+- {file: "levels/spain.yaml", complete: false}
 - {file: "levels/middle.yaml", complete: false}
 - {file: "levels/cross.yaml", complete: false}
 - {file: "levels/cage.yaml", complete: false}
 - {file: "levels/corners.yaml", complete: false}
-- {file: "levels/rain.yaml", complete: false}
-- {file: "levels/plain.yaml", complete: false}
-- {file: "levels/spain.yaml", complete: false}
+- {file: "levels/minefield.yaml", complete: false}
 
