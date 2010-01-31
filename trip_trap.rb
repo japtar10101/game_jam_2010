@@ -30,7 +30,7 @@ puts 'Warning, sound disabled' unless
 class Game
   include EventHandler::HasEventHandler
  
-  def initialize()
+  def initialize(layout = nil)
     make_screen [FULLSCREEN, DOUBLEBUF]
     make_clock
     make_queue
@@ -40,9 +40,14 @@ class Game
     @goons = Group.new
     @spikes = Group.new
     @walls = Group.new
-    @layout = LayoutGenerator.new
+    if layout
+    	@layout = layout
+    else
+    	@layout = LayoutGenerator.new
+    end
     @status = Status.new(@screen)
-    load_file('levels/thin_cooridor.yaml')
+    @layout.load_file('levels/middle.yaml')
+    load_layout
   end
  
   # The "main loop". Repeat the #step method
@@ -55,8 +60,7 @@ class Game
     end
   end
  
-  def load_file(string)
-  	@layout.load_file(string)
+  def load_layout()
   	@layout.generate_layout(@ship, @goons, @walls, @spikes)
     for goon in @goons 
   		make_magic_hooks_for( goon, { YesTrigger.new() => :handle } )

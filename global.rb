@@ -26,4 +26,5 @@ STATUS_GOONS_X = 1180
 TTF.setup()
 ttfont_path = File.join(File.dirname(__FILE__), STATUS_FONT)
 FONT = TTF.new( ttfont_path, STATUS_SIZE )
+LEVEL_FILE = "FreeSans.ttf"
 
