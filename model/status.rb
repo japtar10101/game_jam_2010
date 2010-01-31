@@ -14,7 +14,7 @@ class Status
 		result = FONT.render( "HEALTH: #{health}", true, STATUS_COLOR )
 		result.blit( @screen, [STATUS_HEALTH_X,STATUS_Y] )
 		
-		result = FONT.render( "GOONS: #{goons}", true, STATUS_COLOR )
+		result = FONT.render( "BEES: #{goons}", true, STATUS_COLOR )
 		result.blit( @screen, [STATUS_GOONS_X,STATUS_Y] )
 	end
 end

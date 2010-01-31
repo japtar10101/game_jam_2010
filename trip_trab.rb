@@ -1,14 +1,9 @@
 #!/usr/bin/env ruby
  
 require "rubygame"
-require "model/ship"
-require "model/goon"
-require "model/group"
-require "model/spike"
-require "model/wall"
-require "model/status"
-require "model/menu"
-require "model/image"
+require "controller/menu"
+require "controller/game"
+require "controller/image"
 require "global"
 require "layout"
 
@@ -32,12 +27,8 @@ class TripTrap
     make_clock
     make_queue
     make_event_hooks
+    make_controller
     @state = STATE_TITLE
-    @layout = LayoutGenerator.new
-    #@layout.load_file()
-    
-    
-    #@menu = Image.new
   end
   
   # The "main loop". Repeat the #step method
@@ -51,6 +42,7 @@ class TripTrap
   end
   
   private
+  
   # Create a new Clock to manage the game framerate
   # so it doesn't use 100% of the CPU
   def make_clock
@@ -65,7 +57,8 @@ class TripTrap
   def make_event_hooks
     hooks = {
       :escape => :quit,
-      QuitRequested => :quit
+      QuitRequested => :quit,
+      :return => :change_state
     }
  
     make_magic_hooks( hooks )
@@ -91,7 +84,6 @@ class TripTrap
   
   # Quit the game
   def quit
-    puts "Quitting!"
     throw :quit
   end
   
@@ -111,10 +103,75 @@ class TripTrap
       handle( event )
     end
     
-    # TODO: Draw everything
+    # Draw everything
+    step_state
     
     # Refresh the screen.
     @screen.update()
+  end
+  
+  def change_state
+  	#TODO: remove the quit statements after figuring out the odd collisions
+  	case @state
+		when STATE_TITLE
+  		@state = STATE_MENU
+  		@menu.activate true
+  	when STATE_WIN
+  		quit
+  		@state = STATE_MENU
+  		@menu.activate true
+  	when STATE_LOSE
+  		quit
+  		@state = STATE_MENU
+  		@menu.activate true
+		when STATE_DIRECTIONS
+  		@state = STATE_MENU
+  		@menu.activate true
+  	when STATE_MENU
+  		# load the layout
+  		if @menu.get_filename()
+  			@state = STATE_GAME
+  			@game.load_layout()
+  		else
+  			@state = STATE_DIRECTIONS
+  		end
+  		@menu.activate false
+  	end
+  end
+  
+  def step_state
+  	# add image
+  	case @state
+		when STATE_MENU
+  		@menu.step
+  	when STATE_GAME
+  		# check the game state
+  		state = @game.step
+  		if state == GAME_WON
+  			@state = STATE_WIN
+  			@image.set_image 'sprites/win.png'
+  		elsif state == GAME_LOST
+  			@state = STATE_LOSE
+  			@image.set_image 'sprites/lose.png'
+  		end
+  	when STATE_TITLE
+  		@image.step
+  	when STATE_DIRECTIONS
+  		@image.step
+  	when STATE_WIN
+  		@image.step
+		when STATE_LOSE
+  		@image.step
+  	end
+  end
+  
+  def make_controller
+  	@layout = LayoutGenerator.new
+  	@menu = MenuController.new(@layout, @screen)
+  	make_magic_hooks_for( @menu, MAGIC_HOOKS )
+  	@game = GameController.new(@layout, @screen)
+  	make_magic_hooks_for( @game, MAGIC_HOOKS )
+  	@image = ImageController.new(@layout, @screen)
   end
 end
 

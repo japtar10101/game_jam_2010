@@ -7,7 +7,6 @@ include Rubygame
 
 class Image
 	include Sprites::Sprite
-  include EventHandler::HasEventHandler
   
   attr_reader :layout
 	def initialize layout = nil

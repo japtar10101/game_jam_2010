@@ -11,6 +11,7 @@ class Menu
   include EventHandler::HasEventHandler
   
   attr_reader :layout
+  attr_accessor :control
 	def initialize layout = nil
 		if layout
     	@layout = layout
@@ -35,15 +36,12 @@ class Menu
     make_magic_hooks(
     	#go through menu items
       :up => :up_item,
-      :down => :down_item,
- 
-      # Send ClockTicked events to #update()
-      ClockTicked => :update
+      :down => :down_item
     )
+    @control = false
 	end
 	
 	def draw(screen)
-		#@image.blit(screen, self.rect)
 		y = MENU_Y
 		@items.each_index do |i|
 			string = @items[i]
@@ -59,6 +57,13 @@ class Menu
 		end
 	end
 	
+	def get_filename
+		return nil if @index == 0
+		index = @index - 1
+		hash = @levels[index]
+		return hash["file"]
+	end
+	
 	private
 	def set_items_to_intro
 		@index = 0
@@ -71,20 +76,20 @@ class Menu
 		end
 	end
 	
-	# Add it to the list of keys being pressed.
+	# go up list.
   def up_item
-    @index -= 1
-    @index = @items.length - 1 if @index < 0
+  	if(@control)
+			@index -= 1
+			@index = @items.length - 1 if @index < 0
+		end
   end
  
  
-  # Remove it from the list of keys being pressed.
+  # go down list.
   def down_item
-    @index += 1
-    @index = 0 if @index >= @items.length
-  end
-	
-  # Update the ship state. Called once per frame.
-  def update( event )
+  	if(@control)
+			@index += 1
+			@index = 0 if @index >= @items.length
+		end
   end
 end
