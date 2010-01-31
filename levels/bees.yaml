@@ -2,7 +2,7 @@ title: "Too Many Bees"
 goons: 1
 comment: "too many bees"
 layout: --- |
-- "                ggg                     "
+- "                                        "
 - "                                        "
 - "                                        "
 - "                                        "
@@ -12,9 +12,9 @@ layout: --- |
 - "        g                   g           "
 - "        g                   g           "
 - "        g                   g           "
-- "g       g         h         g          g"
-- "g       g                   g          g"
-- "g       g                   g          g"
+- "        g         h         g           "
+- "        g                   g           "
+- "        g                   g           "
 - "        g                   g           "
 - "        g                   g           "
 - "        g                   g           "
@@ -25,5 +25,5 @@ layout: --- |
 - "                                        "
 - "                                        "
 - "                                        "
-- "                  ggg                   "
+- "                                        "
 
