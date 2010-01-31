@@ -42,7 +42,7 @@ class Game
     @walls = Group.new
     @layout = LayoutGenerator.new
     @status = Status.new(@screen)
-    load_file('levels/test.yaml')
+    load_file('levels/thin_cooridor.yaml')
   end
  
   # The "main loop". Repeat the #step method

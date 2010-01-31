@@ -28,7 +28,6 @@ class LayoutGenerator
 		@layout.each do |string|
 			x = 0
 			string.length.times do |i|
-				x += SHIP[0]
 				case string[i]
 				when "h"
 					place_ship ship, x, y
@@ -39,6 +38,7 @@ class LayoutGenerator
 				when "g"
 					place_goons goons, x, y, ship
 				end
+				x += SHIP[0]
 			end
 			y += SHIP[1]
 		end

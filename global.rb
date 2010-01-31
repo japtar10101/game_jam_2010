@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+require "rubygame"
+
+include Rubygame
+
 RESOLUTION = [1280, 800]
 SHIP = [32, 32]
 SPIKE = SHIP
@@ -13,10 +17,13 @@ PUSH = 6
 SPIKE_PUSH = 30
 SHIP_HEALTH = 5
 SHIP_INVULNERABLE = 10
-STATUS_FONT = "../FreeSans.ttf"
+STATUS_FONT = "FreeSans.ttf"
 STATUS_SIZE = 16
 STATUS_COLOR = [250,250,250]
 STATUS_Y = 5
 STATUS_HEALTH_X = 5
 STATUS_GOONS_X = 1180
+TTF.setup()
+ttfont_path = File.join(File.dirname(__FILE__), STATUS_FONT)
+FONT = TTF.new( ttfont_path, STATUS_SIZE )
 
