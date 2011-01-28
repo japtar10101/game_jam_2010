@@ -29,8 +29,8 @@ class LayoutGenerator
 		y = SHIP[1]
 		@layout.each do |string|
 			x = 0
-			string.length.times do |i|
-				case string[i]
+			string.chars do |char|
+				case char
 				when "h"
 					place_ship ship, x, y
 				when "w"
