@@ -2,14 +2,14 @@
 
 require "rubygame"
 require "yaml"
-require "global"
+load (File.dirname(__FILE__) + '/../global.rb')
 
 include Rubygame
 
 class Menu
 	include Sprites::Sprite
   include EventHandler::HasEventHandler
-  
+
   attr_reader :layout
   attr_accessor :control
 	def initialize layout = nil
@@ -18,20 +18,20 @@ class Menu
     else
     	@layout = LayoutGenerator.new
     end
-    
+
     #store level data
     @levels = YAML.load_file LEVEL_FILE
-    
+
     #setup items and index to display
     @items = Array.new()
     set_items_to_intro
     @index = 0
-    
+
     #load an image
     #@image = Surface.load('sprites/logo.png')
     @rect = Rect.new
     @rect.topleft = [0,0]
-    
+
     # Create event hooks in the easiest way.
     make_magic_hooks(
     	#go through menu items
@@ -40,7 +40,7 @@ class Menu
     )
     @control = false
 	end
-	
+
 	def draw(screen)
 		y = MENU_Y
 		@items.each_index do |i|
@@ -56,14 +56,14 @@ class Menu
 			y += result.height
 		end
 	end
-	
+
 	def get_filename
 		return nil if @index == 0
 		index = @index - 1
 		hash = @levels[index]
 		return hash["file"]
 	end
-	
+
 	private
 	def set_items_to_intro
 		@index = 0
@@ -75,7 +75,7 @@ class Menu
 			@items << @layout.title
 		end
 	end
-	
+
 	# go up list.
   def up_item
   	if(@control)
@@ -83,8 +83,8 @@ class Menu
 			@index = @items.length - 1 if @index < 0
 		end
   end
- 
- 
+
+
   # go down list.
   def down_item
   	if(@control)

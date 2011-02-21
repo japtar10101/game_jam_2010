@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 require "yaml"
-require "global"
+load File.dirname(__FILE__) + "/global.rb"
 
 class LayoutGenerator
-	
+
 	attr_reader :title, :goons, :comment, :layout
 	def initialize()
 		@title
@@ -12,7 +12,7 @@ class LayoutGenerator
 		@comment
 		@layout
 	end
-	
+
 	def load_file( filename )
 		yaml = YAML.load_file filename
 		@title = yaml["title"]
@@ -20,12 +20,12 @@ class LayoutGenerator
 		@comment = yaml["comment"]
 		@layout = yaml["layout"]
 	end
-	
+
 	def generate_layout(ship, goons, walls, spikes)
 		goons.clear
 		walls.clear
 		spikes.clear
-		
+
 		y = SHIP[1]
 		@layout.each do |string|
 			x = 0
@@ -44,23 +44,23 @@ class LayoutGenerator
 			end
 			y += SHIP[1]
 		end
-		
+
 	end
-	
+
 	private
-	
+
 	def place_ship(ship, x, y)
 		ship.placement x, y
 	end
-	
+
 	def place_wall(wall, x, y, ship)
 		wall << Wall.new( x, y, ship )
 	end
-	
+
 	def place_spike(spikes, x, y, ship)
 		spikes << Spike.new( x, y, ship )
 	end
-	
+
 	def place_goons(goons, x, y, ship)
 		xtemp = 0
 		@goons.times do |i|

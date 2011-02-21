@@ -1,30 +1,30 @@
 #!/usr/bin/env ruby
 
 require "rubygame"
-require "global"
+load (File.dirname(__FILE__) + '/../global.rb')
 
 # Include these modules so we can type "Surface" instead of
 # "Rubygame::Surface", etc. Purely for convenience/readability.
- 
+
 include Rubygame
- 
+
 # A class representing the player's ship moving in "space".
 class Spike
 	include Sprites::Sprite
 	include EventHandler::HasEventHandler
-  
+
   def initialize( px, py, ship )
     @image = Surface.load('sprites/spikes.png')
     @rect = @image.make_rect
     @rect.topleft = [px, py]
     @ship = ship
-    
+
     # Create event hooks in the easiest way.
     make_magic_hooks(
       ClockTicked => :update
     )
   end
-  
+
   private
   # Update the ship state. Called once per frame.
   def update( event )
@@ -33,7 +33,7 @@ class Spike
     spikey = @rect.centery
     vy = @ship.vy
     vx = @ship.vx
-    
+
   	#implement repulsion
     if(@ship.collide_sprite?(self))
     	if (@rect.bottom > ship_rect.top and vy < 0)
