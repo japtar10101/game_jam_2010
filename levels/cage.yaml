@@ -1,7 +1,7 @@
 title: "Cage"
 goons: 8
 comment: "Surrounded by spikes"
-layout: --- |
+layout: 
 - " s s s s s s s s s s s s s s s s s s s  "
 - "                                       s"
 - "s                                       "

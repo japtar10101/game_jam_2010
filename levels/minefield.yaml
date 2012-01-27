@@ -1,7 +1,7 @@
 title: "Minefield"
 goons: 16
 comment: "Lots of corners"
-layout: --- |
+layout: 
 - "                                        "
 - "    s           s         s            s"
 - "                                        "
